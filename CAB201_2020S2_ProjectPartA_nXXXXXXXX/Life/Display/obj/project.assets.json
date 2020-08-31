@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/cody/Documents/CAB201/Project1/CAB201_2020S2_ProjectPartA_nXXXXXXXX/Life/Display/Display.csproj",
+      "projectUniqueName": "/home/cody/Documents/CAB201/MajorProject/CAB201_2020S2_ProjectPartA_nXXXXXXXX/Life/Display/Display.csproj",
       "projectName": "display",
-      "projectPath": "/home/cody/Documents/CAB201/Project1/CAB201_2020S2_ProjectPartA_nXXXXXXXX/Life/Display/Display.csproj",
+      "projectPath": "/home/cody/Documents/CAB201/MajorProject/CAB201_2020S2_ProjectPartA_nXXXXXXXX/Life/Display/Display.csproj",
       "packagesPath": "/home/cody/.nuget/packages/",
-      "outputPath": "/home/cody/Documents/CAB201/Project1/CAB201_2020S2_ProjectPartA_nXXXXXXXX/Life/Display/obj/",
+      "outputPath": "/home/cody/Documents/CAB201/MajorProject/CAB201_2020S2_ProjectPartA_nXXXXXXXX/Life/Display/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/cody/.nuget/NuGet/NuGet.Config"
