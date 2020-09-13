@@ -41,21 +41,19 @@ namespace Life
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Chosen Settings");
             WriteParameter("Parameter", "Value");
-            WriteParameter("Rows", this.height);
-            WriteParameter("Columns", this.width);
+            WriteParameter("Step Mode", this.step);
             WriteParameter("Periodic", this.periodic);
             WriteParameter("Random Factor", this.randomFactor);
-            WriteParameter("Seed", this.seed);
-            WriteParameter("Generations", this.nGenerations);
             WriteParameter("Maximum Update Rate", this.updateRate);
-            WriteParameter("Step Mode", this.step);
+            WriteParameter("Generations", this.nGenerations);
+            WriteParameter("Seed", this.seed);
+            WriteParameter("Rows", this.height);
+            WriteParameter("Columns", this.width);
         }
 
 
         private void SetupUniverse()
         {
-            Console.Title = "Conway's Life Simulation";
-            displayGrid = new Grid(height, width);
 
             if (seed == "N/A")
             {
@@ -83,16 +81,17 @@ namespace Life
 
         public void RunSimulation()
         {
+            displayGrid = new Grid(height, width);
             displayGrid.InitializeWindow();
             Console.ForegroundColor = ConsoleColor.DarkMagenta;
             Stopwatch watch = new Stopwatch();
 
-            for (int iteration = 0; iteration < nGenerations; iteration++)
+            for (int iteration = 0; iteration <= nGenerations; iteration++)
             {
                 watch.Restart();
 
                 displayGrid.SetFootnote(string.Format(CultureInfo.InvariantCulture,
-                                                "Iteration: {0,3}", iteration + 1));
+                                                "Iteration: {0,3}", iteration));
 
                 automata.Draw(displayGrid);
                 // Render updates to the console window...

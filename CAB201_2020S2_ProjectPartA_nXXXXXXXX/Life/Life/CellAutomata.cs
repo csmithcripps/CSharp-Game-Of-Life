@@ -82,49 +82,31 @@ namespace Life
             int livingNeighbours = 0;
             int cursorRow;
             int cursorColumn;
-            if (periodic)
+            
+            for (int rowMod = -1; rowMod <= 1; rowMod++)
             {
-                for (int rowMod = -1; rowMod < 2; rowMod++)
+                if (!periodic && (row + rowMod > height || row + rowMod < 0))
                 {
-                    for (int columnMod = -1; columnMod < 2; columnMod++)
-                    {
-                        cursorRow = mod(row + rowMod, height);
-                        cursorColumn = mod(column + columnMod, width);
-
-                        if (cursorColumn == column && cursorRow == row)
-                        {
-                            continue;
-                        }
-                        livingNeighbours += cellStates[cursorRow, cursorColumn];
-                    }
+                    continue;
                 }
-            }
-            else
-            {
-                for (cursorRow = row - 1; cursorRow <= row + 1; cursorRow++)
+
+                cursorRow = (row + rowMod + height) % height;
+
+                for (int columnMod = -1; columnMod <= 1; columnMod++)
                 {
-                    if (cursorRow < 0 || cursorRow >= height)
+                    cursorColumn = (column + columnMod + width) % width;
+
+                    if ((cursorColumn == column && cursorRow == row) ||
+                        (!periodic && (column + columnMod > width || column + columnMod < 0)))
                     {
                         continue;
                     }
-                    for (cursorColumn = column - 1; cursorColumn <= column + 1; cursorColumn++)
-                    {
-                        if (cursorColumn < 0 || cursorColumn >= width ||
-                            (cursorColumn == column && cursorRow == row))
-                        {
-                            continue;
-                        }
-                        livingNeighbours += cellStates[cursorRow, cursorColumn];
-                    }
+                    
+                    livingNeighbours += cellStates[cursorRow, cursorColumn];
                 }
             }
-            return livingNeighbours;
-        }
 
-        private int mod(int a, int n)
-        {
-            if (a<0) return a+n;
-            else return a%n;            
+            return livingNeighbours;
         }
     }
 }
