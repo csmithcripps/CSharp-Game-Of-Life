@@ -38,6 +38,14 @@ namespace Life
             this.periodic = periodic;
         }
 
+        public CellAutomata(Settings settings)
+        {
+            this.height = settings.height;
+            this.width = settings.width;
+            this.periodic = settings.periodic;
+            cellStates = new CellStates[this.height, this.width];
+        }
+
         /// <summary>
         /// Randomises the universe based on some factor of randomness
         /// </summary>

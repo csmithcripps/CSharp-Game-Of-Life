@@ -13,12 +13,14 @@ namespace Life
     {
         static void Main(string[] args)
         {
+
+            Settings settings = ArgumentHandler.HandleArguments(args);
             //Init Game of Life Class
             ConwaysLifeSimulator sim = (args.Length != 0) ?
                     new ConwaysLifeSimulator(args) : new ConwaysLifeSimulator();
             
             //Print Runtime Parameters
-            sim.PrintParameters();
+            sim.settings.PrintParameters();
 
             //Wait to start
             Console.WriteLine("Press <SPACE> to start...");

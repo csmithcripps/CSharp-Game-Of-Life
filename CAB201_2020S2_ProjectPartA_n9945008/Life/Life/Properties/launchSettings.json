@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Life": {
+      "commandName": "Project",
+      "commandLineArgs": "--random 0.8 --generations 20 --seed \"fff\""
+    }
+  }
+}
