@@ -25,6 +25,12 @@ namespace Life
             automata = new CellAutomata(settings);
             HandleSeed();
         }
+        public ConwaysLifeSimulator(Settings ParsedSettings)
+        {
+            this.settings = ParsedSettings;
+            automata = new CellAutomata(settings);
+            HandleSeed();
+        }
 
         /// <summary>
         /// Constructs new simulator with values based on console flags

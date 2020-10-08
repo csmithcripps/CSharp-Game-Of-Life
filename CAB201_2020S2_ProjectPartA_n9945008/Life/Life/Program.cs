@@ -7,7 +7,7 @@ using Display;
 namespace Life
 {
     /// <summary>
-    /// Top level running of Conway's life sim
+    /// Top level running of Conway's life simulator
     /// </summary>
     class Program
     {
@@ -16,24 +16,23 @@ namespace Life
 
             Settings settings = ArgumentHandler.HandleArguments(args);
             //Init Game of Life Class
-            ConwaysLifeSimulator sim = (args.Length != 0) ?
-                    new ConwaysLifeSimulator(args) : new ConwaysLifeSimulator();
+            ConwaysLifeSimulator simulator = new ConwaysLifeSimulator(settings);
             
             //Print Runtime Parameters
-            sim.settings.PrintParameters();
+            simulator.settings.PrintParameters();
 
             //Wait to start
             Console.WriteLine("Press <SPACE> to start...");
             while (Console.ReadKey().Key != ConsoleKey.Spacebar) ;
 
             //Run Simulation with Runtime Parameters
-            sim.RunSimulation();
+            simulator.RunSimulation();
 
             //Wait to exit
             while (Console.ReadKey().Key != ConsoleKey.Spacebar) ;
             
             //Reset Console
-            sim.exit();
+            simulator.exit();
             Console.ResetColor();
             
         }
