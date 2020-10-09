@@ -12,7 +12,7 @@ namespace Life
     /// </summary>
     public class ConwaysLifeSimulator
     {
-        private CellAutomata automata;
+        private Universe universe;
         public Settings settings { get; private set; }
         public Grid displayGrid;
 
@@ -22,38 +22,27 @@ namespace Life
         public ConwaysLifeSimulator()
         {
             settings = new Settings();
-            automata = new CellAutomata(settings);
+            universe = new Universe(settings);
             HandleSeed();
         }
+        
         public ConwaysLifeSimulator(Settings ParsedSettings)
         {
             this.settings = ParsedSettings;
-            automata = new CellAutomata(settings);
+            universe = new Universe(settings);
             HandleSeed();
         }
 
         /// <summary>
-        /// Constructs new simulator with values based on console flags
-        /// </summary>
-        /// <param name="args">A set of console arguments</param>
-        /// 
-        public ConwaysLifeSimulator(string[] args)
-        {
-            settings = new Settings(args);
-            automata = new CellAutomata(settings);
-            HandleSeed();
-        }
-
-        /// <summary>
-        /// Initialises cellautomata universe with initial living cells
+        /// Initialises Universe universe with initial living cells
         /// </summary>
         /// 
         private void HandleSeed()
         {
-            // If no seed is chosen, tell automata to randomise
+            // If no seed is chosen, tell universe to randomise
             if (settings.seed == "N/A")
             {
-                automata.RandomSeed(settings.randomFactor);
+                universe.RandomSeed(settings.randomFactor);
             }
             else
             {
@@ -76,7 +65,7 @@ namespace Life
                         int.TryParse(data[1], out column);
 
                         // Set chosen cell to alive
-                        automata.SetCellAlive(row, column);
+                        universe.SetCellAlive(row, column);
 
                         // Read next line
                         line = reader.ReadLine();
@@ -104,11 +93,11 @@ namespace Life
                                                 "Iteration: {0,3}", iteration));
 
                 // Draw current state to the console window
-                automata.Draw(displayGrid);
+                universe.Draw(displayGrid);
                 displayGrid.Render();
 
                 // Update to next generation
-                automata.Update();
+                universe.Update();
 
                 // Wait until at least maximum update time is reached
                 while (watch.ElapsedMilliseconds <= 1000 / settings.updateRate) ;

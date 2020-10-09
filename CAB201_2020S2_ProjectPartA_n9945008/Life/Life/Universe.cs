@@ -14,7 +14,7 @@ namespace Life
     /// <summary>
     /// A class representing a "Universe" described by the laws of Conway's game of Life
     /// </summary>
-    public class CellAutomata
+    public class Universe
     {
 
         private CellStates[,] cellStates;
@@ -30,7 +30,7 @@ namespace Life
         /// <param name="width">Width in columns</param>
         /// <param name="periodic">Whether or not periodic boundaries are enabled</param>
         /// 
-        public CellAutomata(int height, int width, bool periodic = false)
+        public Universe(int height, int width, bool periodic = false)
         {
             cellStates = new CellStates[height, width];
             this.height = height;
@@ -38,7 +38,7 @@ namespace Life
             this.periodic = periodic;
         }
 
-        public CellAutomata(Settings settings)
+        public Universe(Settings settings)
         {
             this.height = settings.height;
             this.width = settings.width;
