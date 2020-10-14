@@ -24,7 +24,7 @@ namespace Life
         }
 
 
-        public void Write(string label)
+        public virtual void Write(string label)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write("{0, 20}:\t", label);

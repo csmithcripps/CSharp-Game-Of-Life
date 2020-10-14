@@ -9,7 +9,7 @@ using Display;
 
 namespace Life
 {
-    public class ArgumentHandler
+    public static class ArgumentHandler
     {
         /// <summary>
         /// Handles the input console arguments by setting the object parameters
@@ -27,6 +27,17 @@ namespace Life
             {
                 try
                 {
+                    List<string> parameterList = new List<string>();
+                    int cursor = argumentNum + 1;
+                    while (cursor < args.Length)
+                    {
+                        if (args[cursor][0] == '-')
+                        {
+                            break;
+                        }
+                        parameterList.Add(args[cursor]);
+                        cursor++;
+                    }
                     // Do some action based on which flag is found
                     switch (args[argumentNum])
                     {
@@ -45,39 +56,64 @@ namespace Life
                         // Set the random factor
                         case "--random":
                             defaultVal = settings.randomFactor.ToString();
-                            settings.randomFactor.Set(args[argumentNum + 1]);
+                            settings.randomFactor.Set(parameterList[0]);
                             break;
 
                         // Set the maximum update rate
                         case "--max-update":
                             defaultVal = settings.updateRate.ToString();
-                            settings.updateRate.Set(args[argumentNum + 1]);
+                            settings.updateRate.Set(parameterList[0]);
                             break;
 
                         // Set the number of generations
                         case "--generations":
                             defaultVal = settings.nGenerations.ToString();
-                            settings.nGenerations.Set(args[argumentNum + 1]);
+                            settings.nGenerations.Set(parameterList[0]);
                             break;
 
                         // Set the seed
                         case "--seed":
                             defaultVal = settings.seed.ToString();
-                            settings.seed.Set(args[argumentNum + 1]);
+                            if (!File.Exists(parameterList[0]))
+                            {
+                                throw new System.ArgumentException("Some Arguments Entered Incorrectly",
+                                                                    parameterList[0]);
+                            }
+                            settings.seed.Set(parameterList[0]);
+                            break;
+
+                        case "--output":
+                            defaultVal = settings.outputFile.ToString();
+                            settings.outputFile.Set(parameterList[0]);
                             break;
 
                         // Set the dimensions
                         case "--dimensions":
                             defaultVal = settings.width.ToString() + "x" + settings.height.ToString();
-                            settings.width.Set(args[argumentNum + 1]);
-                            settings.height.Set(args[argumentNum + 2]);
+                            settings.width.Set(parameterList[0]);
+                            settings.height.Set(parameterList[1]);
+                            break;
+
+                        case "--survival":
+                            defaultVal = settings.survival.ToString();
+                            settings.survival.Set(parameterList.ToArray());
+                            break;
+
+                        case "--birth":
+                            defaultVal = settings.birth.ToString();
+                            settings.birth.Set(parameterList.ToArray());
+                            break;
+
+                        case "--neighbour":
+                            defaultVal = settings.neighborhoodStyle.ToString();
+                            settings.neighborhoodStyle.Set(parameterList[0]);
                             break;
 
                         default:
                             break;
                     }
                 }
-                catch (ArgumentException e)
+                catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Unsuccessfully Changed " + args[argumentNum]);

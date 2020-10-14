@@ -43,7 +43,7 @@ namespace Life
                 {
                     // If some random number is less than the random factor, set cell to alive
                     //      else set cell to dead
-                    cellStates[row, column] = (generator.NextDouble() < settings.randomFactor) ? 
+                    cellStates[row, column] = (generator.NextDouble() < settings.randomFactor) ?
                         CellStates.Alive : CellStates.Dead;
                 }
             }
@@ -90,22 +90,22 @@ namespace Life
             for (int row = 0; row < settings.height; row++)
             {
                 for (int column = 0; column < settings.width; column++)
-                { 
+                {
                     livingNeighbours = GetLivingNeighbours(row, column);
 
                     // If the cell is alive and has 2 or 3 living neighbours, stay alive
                     if ((int)cellStates[row, column] == 1 &&
-                        (livingNeighbours == 2 || livingNeighbours == 3))
+                        settings.survival.value.Contains(livingNeighbours))
                     {
                         newStates[row, column] = CellStates.Alive;
                     }
 
                     // If the cell is dead and has exactly three living neighbours, revive
-                    else if (cellStates[row, column] == 0 && livingNeighbours == 3)
+                    else if (cellStates[row, column] == 0 &&
+                            settings.birth.value.Contains(livingNeighbours))
                     {
-                        newStates[row, column] = CellStates.Alive;                        
+                        newStates[row, column] = CellStates.Alive;
                     }
-
                     // Otherwise set the cell to dead
                     else
                     {
