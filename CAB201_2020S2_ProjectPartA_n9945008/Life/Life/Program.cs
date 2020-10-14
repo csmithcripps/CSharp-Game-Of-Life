@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using Display;
 
 namespace Life
 {
@@ -17,7 +13,7 @@ namespace Life
             Settings settings = ArgumentHandler.HandleArguments(args);
             //Init Game of Life Class
             Simulator simulator = new Simulator(settings);
-            
+
             //Print Runtime Parameters
             simulator.settings.PrintParameters();
 
@@ -30,11 +26,11 @@ namespace Life
 
             //Wait to exit
             while (Console.ReadKey().Key != ConsoleKey.Spacebar) ;
-            
+
             //Reset Console
             simulator.exit();
             Console.ResetColor();
-            
+
         }
     }
 }

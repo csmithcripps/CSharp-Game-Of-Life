@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using Display;
 
 
 namespace Life
@@ -51,6 +48,12 @@ namespace Life
                         case "--periodic":
                             defaultVal = settings.periodic.ToString();
                             settings.periodic = (BoolOption)true;
+                            break;
+
+                        // Activate ghost mode
+                        case "--ghost":
+                            defaultVal = settings.ghost.ToString();
+                            settings.ghost = (BoolOption)true;
                             break;
 
                         // Set the random factor

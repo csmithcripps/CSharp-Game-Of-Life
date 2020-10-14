@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Life.Structures
 {
     public class Cell : Structure
     {
         public Cell(string[] data, ref Universe universe) : base(data, ref universe)
-        {}
+        { }
         public override void build(int[] keypoints, string state, ref Universe universe)
-        {            
+        {
             base.SetCellFromSeed(keypoints[0], keypoints[1], state, ref universe);
         }
         public override int[] stringArrayToKeypoints(string[] data)

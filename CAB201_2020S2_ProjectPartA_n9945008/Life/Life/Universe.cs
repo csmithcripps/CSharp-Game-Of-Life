@@ -1,8 +1,6 @@
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using Display;
+using System;
+using System.Collections.Generic;
 
 namespace Life
 {
@@ -12,7 +10,8 @@ namespace Life
     public class Universe
     {
 
-        private CellStates[,] cellStates;
+        private CellStates[,] cellArray;
+        private List<CellStates[,]> universeMemory;
         private Settings settings;
 
         /// <summary>
@@ -24,7 +23,12 @@ namespace Life
         public Universe(Settings settings)
         {
             this.settings = settings;
-            cellStates = new CellStates[settings.height, settings.width];
+            cellArray = new CellStates[settings.height, settings.width];
+            universeMemory = new List<CellStates[,]>();
+            universeMemory.Add(cellArray);
+            universeMemory.Add(cellArray);
+            universeMemory.Add(cellArray);
+            universeMemory.Add(cellArray);
         }
 
         /// <summary>
@@ -43,7 +47,7 @@ namespace Life
                 {
                     // If some random number is less than the random factor, set cell to alive
                     //      else set cell to dead
-                    cellStates[row, column] = (generator.NextDouble() < settings.randomFactor) ?
+                    cellArray[row, column] = (generator.NextDouble() < settings.randomFactor) ?
                         CellStates.Alive : CellStates.Dead;
                 }
             }
@@ -57,7 +61,7 @@ namespace Life
         /// 
         public void SetCell(int row, int column, CellStates Status)
         {
-            cellStates[row, column] = Status;
+            cellArray[row, column] = Status;
         }
 
         /// <summary>
@@ -71,7 +75,29 @@ namespace Life
             {
                 for (int column = 0; column < settings.width; column++)
                 {
-                    grid.UpdateCell(row, column, (CellState)cellStates[row, column]);
+
+                    CellState state = CellState.Blank;
+                    if (cellArray[row, column] == CellStates.Alive)
+                    {
+                        state = CellState.Full;
+                    }
+                    else if (settings.ghost)
+                    {
+                        if (universeMemory[universeMemory.Count - 2][row, column] == CellStates.Alive)
+                        {
+                            state = CellState.Light;
+                        }
+                        else if (universeMemory[universeMemory.Count - 3][row, column] == CellStates.Alive)
+                        {
+                            state = CellState.Medium;
+                        }
+                        else if (universeMemory[universeMemory.Count - 4][row, column] == CellStates.Alive)
+                        {
+                            state = CellState.Dark;
+                        }
+
+                    }
+                    grid.UpdateCell(row, column, state);
                 }
             }
         }
@@ -94,14 +120,14 @@ namespace Life
                     livingNeighbours = GetLivingNeighbours(row, column);
 
                     // If the cell is alive and has 2 or 3 living neighbours, stay alive
-                    if ((int)cellStates[row, column] == 1 &&
+                    if ((int)cellArray[row, column] == 1 &&
                         settings.survival.value.Contains(livingNeighbours))
                     {
                         newStates[row, column] = CellStates.Alive;
                     }
 
                     // If the cell is dead and has exactly three living neighbours, revive
-                    else if (cellStates[row, column] == 0 &&
+                    else if (cellArray[row, column] == 0 &&
                             settings.birth.value.Contains(livingNeighbours))
                     {
                         newStates[row, column] = CellStates.Alive;
@@ -115,8 +141,14 @@ namespace Life
             }
 
             // Update Class variable to match new state
-            cellStates = newStates;
+            cellArray = newStates;
+            universeMemory.Add(cellArray);
+            if (universeMemory.Count > settings.generationalMemory)
+            {
+                universeMemory.RemoveAt(0);
+            }
         }
+
 
         /// <summary>
         /// Determines the number of living neighbours of some cell
@@ -157,7 +189,7 @@ namespace Life
                     }
 
                     // Add the integer version of the cell state to the number of living neighbours.
-                    livingNeighbours += (int)cellStates[cursorRow, cursorColumn];
+                    livingNeighbours += (int)cellArray[cursorRow, cursorColumn];
                 }
             }
 

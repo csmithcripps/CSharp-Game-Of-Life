@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Life.Structures
 {
@@ -24,7 +22,7 @@ namespace Life.Structures
             int[] keypoints = new int[4];
             for (int i = 0; i < 4; i++)
             {
-                
+
                 int.TryParse(data[i + 2], out keypoints[i]);
             }
             return keypoints;

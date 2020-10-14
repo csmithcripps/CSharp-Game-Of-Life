@@ -31,7 +31,7 @@
         };
 
         private CellState state;
-        
+
         /// <summary>
         /// Initializes the cell (as blank)
         /// </summary>

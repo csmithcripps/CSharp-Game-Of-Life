@@ -1,9 +1,6 @@
 using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using Display;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Life
 {
@@ -45,11 +42,11 @@ namespace Life
                                             NumberStyles.AllowDecimalPoint |
                                             NumberStyles.AllowThousands,
                                             CultureInfo.InvariantCulture);
-                    
-                        if (!value.Contains(paramNumber))
-                        {
-                            value.Add(paramNumber);
-                        }
+
+                    if (!value.Contains(paramNumber))
+                    {
+                        value.Add(paramNumber);
+                    }
 
                 }
 

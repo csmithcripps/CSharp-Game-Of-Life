@@ -1,8 +1,5 @@
 using System;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using Display;
 
 namespace Life
 {
@@ -18,7 +15,7 @@ namespace Life
             {
                 using (TextReader reader = new StreamReader(filePath))
                 {
-                    // Flush first line
+                    // Flush first line 
                     string line = reader.ReadLine();
 
                     if (line == "#version=1.0")
@@ -32,11 +29,11 @@ namespace Life
 
                 }
             }
-            catch(System.IO.DirectoryNotFoundException)
+            catch (System.IO.DirectoryNotFoundException)
             {
                 universe.RandomSeed();
             }
-            catch(System.IndexOutOfRangeException)
+            catch (System.IndexOutOfRangeException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Error in Seed \nDefaulting to Random");
@@ -94,7 +91,7 @@ namespace Life
 
                     case "ellipse":
                         new Structures.Ellipse(data, ref universe);
-                        break; 
+                        break;
 
                     default:
                         break;

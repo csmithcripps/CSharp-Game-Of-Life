@@ -1,8 +1,4 @@
-using System;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using Display;
 
 namespace Life
 {
@@ -10,7 +6,8 @@ namespace Life
     {
 
         public FileOption(string name, string defaultValue) :
-                            base(name, defaultValue) {}
+                            base(name, defaultValue)
+        { }
 
         public override void Set(string param)
         {

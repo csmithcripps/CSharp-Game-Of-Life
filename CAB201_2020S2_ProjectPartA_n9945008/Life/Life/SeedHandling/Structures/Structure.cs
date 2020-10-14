@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Life.Structures
+﻿namespace Life.Structures
 {
     public abstract class Structure
     {
-        public Structure(string[] data, ref Universe universe){
+        public Structure(string[] data, ref Universe universe)
+        {
             int[] keypoints = stringArrayToKeypoints(data);
             build(keypoints, data[0], ref universe);
         }

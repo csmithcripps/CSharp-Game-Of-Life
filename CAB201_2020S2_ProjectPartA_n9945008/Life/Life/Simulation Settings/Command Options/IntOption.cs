@@ -1,8 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using Display;
 
 namespace Life
 {
@@ -33,7 +30,7 @@ namespace Life
             }
             else
             {
-                throw new System.ArgumentOutOfRangeException($"{paramNumber}", 
+                throw new System.ArgumentOutOfRangeException($"{paramNumber}",
                             $"Argument must be within the range {min}:{max}");
             }
         }

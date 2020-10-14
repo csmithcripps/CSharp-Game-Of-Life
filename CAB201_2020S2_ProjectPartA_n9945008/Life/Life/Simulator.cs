@@ -1,8 +1,7 @@
+using Display;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using Display;
 
 namespace Life
 {
@@ -25,13 +24,13 @@ namespace Life
             universe = new Universe(settings);
             SeedReader.HandleSeed(settings.seed, ref universe);
         }
-        
+
         public Simulator(Settings ParsedSettings)
         {
             this.settings = ParsedSettings;
             universe = new Universe(settings);
             SeedReader.HandleSeed(settings.seed, ref universe);
-        }        
+        }
 
         /// <summary>
         /// Run the actual simulation (iterate through generations at desired speed) 

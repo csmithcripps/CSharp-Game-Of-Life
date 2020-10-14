@@ -38,13 +38,13 @@ namespace Display
 
         public bool IsComplete { get; set; }
 
-        #if WINDOWS
+#if WINDOWS
         [DllImport("kernel32.dll", ExactSpelling = true)]
         private static extern IntPtr GetConsoleWindow();
-        #else
+#else
         [DllImport("libc")]
         private static extern int system(string exec);
-        #endif
+#endif
 
         /// ------------------------------------------------------------
         /// Public Methods. These CAN be called from your program.
@@ -95,14 +95,14 @@ namespace Display
             storedBufferHeight = Console.BufferHeight;
 
             Console.CursorVisible = false;
-            
-            #if WINDOWS
+
+#if WINDOWS
             Console.SetWindowSize(bufferWidth + 1, bufferHeight + 1);
             Console.SetBufferSize(bufferWidth + 1, bufferHeight + 1);
-            #else
+#else
             system($@"printf '\e[8;{bufferHeight + 1};{bufferWidth + 1}t'");
-            #endif
-            
+#endif
+
             Console.Clear();
         }
 
@@ -114,14 +114,14 @@ namespace Display
             Console.Clear();
 
             Console.CursorVisible = true;
-            
-            #if WINDOWS
+
+#if WINDOWS
             Console.SetWindowSize(storedWindowWidth, storedWindowHeight);
             Console.SetBufferSize(storedBufferWidth, storedBufferHeight);
-            #else
+#else
             system($@"printf '\e[8;{storedBufferHeight};{storedBufferWidth}t'");
-            #endif
-            
+#endif
+
             Console.Clear();
         }
 
@@ -169,9 +169,10 @@ namespace Display
             }
             Console.Write(render);
             Console.Write(footnote.PadLeft(LeftMargin + Border + cols * CellWidth));
-            if (IsComplete) {
-                Console.SetCursorPosition(LeftMargin + Border + (cols*CellWidth)/2 - 5, 
-                                          TopMargin + Border + rows*CellHeight);
+            if (IsComplete)
+            {
+                Console.SetCursorPosition(LeftMargin + Border + (cols * CellWidth) / 2 - 5,
+                                          TopMargin + Border + rows * CellHeight);
                 Console.Write(" COMPLETE ");
             }
         }
@@ -188,8 +189,8 @@ namespace Display
             {
                 this.footnote = footnote.Substring(footnote.Length - CellWidth * cols, CellWidth * cols);
             }
-            else 
-            { 
+            else
+            {
                 this.footnote = footnote;
             }
         }
@@ -201,7 +202,7 @@ namespace Display
         /// <summary>
         /// Initializes the cell array to be filled with blank cells.
         /// </summary>
-        private void InitializeCells() 
+        private void InitializeCells()
         {
             cells = new Cell[rows][];
             for (int i = 0; i < rows; i++)
@@ -236,7 +237,7 @@ namespace Display
         private void DrawBorder()
         {
             if (Border == 1)
-            { 
+            {
                 buffer[TopMargin][LeftMargin] = '╔';
                 buffer[TopMargin][LeftMargin + Border + CellWidth * cols] = '╗';
                 buffer[TopMargin + Border + CellHeight * rows][LeftMargin] = '╚';

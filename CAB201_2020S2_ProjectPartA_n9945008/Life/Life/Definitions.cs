@@ -1,10 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using Display;
-
-namespace Life
+﻿namespace Life
 {
     public enum CellStates
     {
