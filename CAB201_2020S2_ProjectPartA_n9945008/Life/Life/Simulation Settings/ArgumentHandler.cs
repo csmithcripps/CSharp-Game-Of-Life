@@ -70,7 +70,7 @@ namespace Life
                         case "--dimensions":
                             defaultVal = settings.width.ToString() + "x" + settings.height.ToString();
                             settings.width.Set(args[argumentNum + 1]);
-                            settings.height.Set(args[argumentNum + 1]);
+                            settings.height.Set(args[argumentNum + 2]);
                             break;
 
                         default:

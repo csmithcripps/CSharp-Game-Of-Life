@@ -16,7 +16,7 @@ namespace Life
 
             Settings settings = ArgumentHandler.HandleArguments(args);
             //Init Game of Life Class
-            ConwaysLifeSimulator simulator = new ConwaysLifeSimulator(settings);
+            Simulator simulator = new Simulator(settings);
             
             //Print Runtime Parameters
             simulator.settings.PrintParameters();
