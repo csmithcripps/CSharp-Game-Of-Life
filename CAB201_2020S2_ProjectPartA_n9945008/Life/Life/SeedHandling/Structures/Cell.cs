@@ -4,31 +4,22 @@ using System.Text;
 
 namespace Life.Structures
 {
-    interface Cell
+    public class Cell : Structure
     {
-        static void build(string[] data, ref Universe universe)
+        public Cell(string[] data, ref Universe universe) : base(data, ref universe)
+        {}
+        public override void build(int[] keypoints, string state, ref Universe universe)
+        {            
+            base.SetCellFromSeed(keypoints[0], keypoints[1], state, ref universe);
+        }
+        public override int[] stringArrayToKeypoints(string[] data)
         {
             Console.WriteLine(data[0] + data[1] + data[2] + " , " + data[3]);
-            int row, column;
-            int.TryParse(data[2], out row);
-            Console.WriteLine(row);
-            int.TryParse(data[3], out column);
-            Console.WriteLine(column);
-
-            // Set chosen cell to alive
-            switch (data[0])
-            {
-                case "(o)":
-                    universe.SetCell(row, column, CellStates.Alive);
-                    break;
-
-                case "(x)":
-                    universe.SetCell(row, column, CellStates.Dead);
-                    break;
-
-                default:
-                    break;
-            }
+            int[] keypoints = new int[2];
+            int.TryParse(data[2], out keypoints[0]);
+            int.TryParse(data[3], out keypoints[1]);
+            return keypoints;
         }
     }
+
 }

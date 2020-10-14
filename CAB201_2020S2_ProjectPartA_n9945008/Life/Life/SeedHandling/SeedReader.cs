@@ -14,16 +14,10 @@ namespace Life
         /// 
         public static void HandleSeed(string filePath, ref Universe universe)
         {
-            // If no seed is chosen, tell universe to randomise
-            if (filePath == "N/A")
-            {
-                universe.RandomSeed();
-            }
-            else
+            try
             {
                 using (TextReader reader = new StreamReader(filePath))
                 {
-
                     // Flush first line
                     string line = reader.ReadLine();
 
@@ -35,7 +29,19 @@ namespace Life
                     {
                         HandleVersion2(reader, ref universe);
                     }
+
                 }
+            }
+            catch(System.IO.DirectoryNotFoundException)
+            {
+                universe.RandomSeed();
+            }
+            catch(System.IndexOutOfRangeException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Error in Seed \nDefaulting to Random");
+                universe.RandomSeed();
+                Console.ResetColor();
             }
         }
 
@@ -61,10 +67,10 @@ namespace Life
                 line = reader.ReadLine();
             }
         }
-        
+
 
         private static void HandleVersion2(TextReader reader, ref Universe universe)
-        { 
+        {
             // Initial Read
             string line = reader.ReadLine();
 
@@ -73,13 +79,22 @@ namespace Life
             {
                 // Take Cell from seed file
                 line = line.Replace(",", "");
+                line = line.Replace(":", "");
                 string[] data = line.Split(" ");
 
-                switch(data[1])
+                switch (data[1])
                 {
-                    case "cell:":
-                        Structures.Cell.build(data, ref universe);
+                    case "cell":
+                        new Structures.Cell(data, ref universe);
                         break;
+
+                    case "rectangle":
+                        new Structures.Rectangle(data, ref universe);
+                        break;
+
+                    case "ellipse":
+                        new Structures.Ellipse(data, ref universe);
+                        break; 
 
                     default:
                         break;
