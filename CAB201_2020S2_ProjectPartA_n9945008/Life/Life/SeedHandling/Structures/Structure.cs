@@ -18,11 +18,11 @@
             switch (state)
             {
                 case "(o)":
-                    universe.SetCell(row, column, CellStates.Alive);
+                    universe.SetCell(row, column, CellStatus.Alive);
                     break;
 
                 case "(x)":
-                    universe.SetCell(row, column, CellStates.Dead);
+                    universe.SetCell(row, column, CellStatus.Dead);
                     break;
 
                 default:

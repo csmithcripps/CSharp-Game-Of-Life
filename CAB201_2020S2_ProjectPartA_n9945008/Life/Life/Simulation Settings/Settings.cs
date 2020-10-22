@@ -56,7 +56,7 @@ namespace Life
         public RuleOption survival = new RuleOption("Survival Rule", defaultSurvival());
         public RuleOption birth = new RuleOption("Birth Rule", defaultBirth());
         public NeighborhoodOption neighborhoodStyle = new NeighborhoodOption("Neighborhood Style",
-                                                                Neighborhood.moore,
+                                                                NeighborhoodType.moore,
                                                                 new string[] { "moore", "vonneumann" });
 
         public Settings()

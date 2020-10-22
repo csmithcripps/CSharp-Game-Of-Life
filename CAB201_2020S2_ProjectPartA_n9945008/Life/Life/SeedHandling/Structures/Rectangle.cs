@@ -18,11 +18,9 @@ namespace Life.Structures
         }
         public override int[] stringArrayToKeypoints(string[] data)
         {
-            Console.WriteLine(string.Join(',', data));
             int[] keypoints = new int[4];
             for (int i = 0; i < 4; i++)
             {
-
                 int.TryParse(data[i + 2], out keypoints[i]);
             }
             return keypoints;

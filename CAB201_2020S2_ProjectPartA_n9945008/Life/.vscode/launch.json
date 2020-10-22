@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/Life/bin/Debug/netcoreapp3.1/life.dll",
-            "args": [--periodic --step],
+            "args": "--periodic --neighbour vonNeumann 1 false",
             "cwd": "${workspaceFolder}/Life",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",

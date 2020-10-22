@@ -74,6 +74,12 @@ namespace Life
                             settings.nGenerations.Set(parameterList[0]);
                             break;
 
+                        // Set the number of generations to be held in memory
+                        case "--memory":
+                            defaultVal = settings.generationalMemory.ToString();
+                            settings.generationalMemory.Set(parameterList[0]);
+                            break;
+
                         // Set the seed
                         case "--seed":
                             defaultVal = settings.seed.ToString();
@@ -109,7 +115,7 @@ namespace Life
 
                         case "--neighbour":
                             defaultVal = settings.neighborhoodStyle.ToString();
-                            settings.neighborhoodStyle.Set(parameterList[0]);
+                            settings.neighborhoodStyle.Set(parameterList.ToArray());
                             break;
 
                         default:

@@ -10,9 +10,12 @@ namespace Life
     public class Universe
     {
 
-        private CellStates[,] cellArray;
-        private List<CellStates[,]> universeMemory;
-        private Settings settings;
+        private CellStatus[,] cellArray;
+        private UniverseMemory universeMemory;
+        private CellStatus[,,] ghostMemory;
+        public Settings settings;
+
+        private NeighborhoodHandler neighborhoodHandler;
 
         /// <summary>
         /// Constructs a new instance of the Cell Automata "Universe" of a specified size
@@ -22,34 +25,25 @@ namespace Life
         /// 
         public Universe(Settings settings)
         {
+
             this.settings = settings;
-            cellArray = new CellStates[settings.height, settings.width];
-            universeMemory = new List<CellStates[,]>();
-            universeMemory.Add(cellArray);
-            universeMemory.Add(cellArray);
-            universeMemory.Add(cellArray);
-            universeMemory.Add(cellArray);
-        }
-
-        /// <summary>
-        /// Randomises the universe based on some factor of randomness
-        /// </summary>
-        /// <param name="randomFactor">Percentage of cells that will be alive</param>
-        ///     
-        public void RandomSeed()
-        {
-            Random generator = new Random();
-
-            // Run through every row and column
-            for (int row = 0; row < settings.height; row++)
+            cellArray = new CellStatus[settings.height, settings.width];
+            universeMemory = new UniverseMemory(settings.generationalMemory, ref settings);
+            ghostMemory = new CellStatus[4, settings.height, settings.width];
+            switch (settings.neighborhoodStyle.value)
             {
-                for (int column = 0; column < settings.width; column++)
-                {
-                    // If some random number is less than the random factor, set cell to alive
-                    //      else set cell to dead
-                    cellArray[row, column] = (generator.NextDouble() < settings.randomFactor) ?
-                        CellStates.Alive : CellStates.Dead;
-                }
+                case NeighborhoodType.moore:
+                    neighborhoodHandler = new MooreNeighborhood(settings.neighborhoodStyle);
+                    break;
+
+                case NeighborhoodType.vonNeumann:
+                    neighborhoodHandler = new VonNeumannNeighborhood(settings.neighborhoodStyle);
+                    break;
+
+                default:
+                    neighborhoodHandler = new MooreNeighborhood(settings.neighborhoodStyle);
+                    break;
+
             }
         }
 
@@ -59,9 +53,14 @@ namespace Life
         /// <param name="row">Row of the chosen cell</param>
         /// <param name="column">column of the chosen cell</param>
         /// 
-        public void SetCell(int row, int column, CellStates Status)
+        public void SetCell(int row, int column, CellStatus Status)
         {
             cellArray[row, column] = Status;
+        }
+
+        public CellStatus GetCell(int row, int column)
+        {
+            return cellArray[row, column];
         }
 
         /// <summary>
@@ -77,23 +76,23 @@ namespace Life
                 {
 
                     CellState state = CellState.Blank;
-                    if (cellArray[row, column] == CellStates.Alive)
+                    if (cellArray[row, column] == CellStatus.Alive)
                     {
                         state = CellState.Full;
                     }
                     else if (settings.ghost)
                     {
-                        if (universeMemory[universeMemory.Count - 2][row, column] == CellStates.Alive)
+                        if (ghostMemory[1, row, column] == CellStatus.Alive)
                         {
-                            state = CellState.Light;
+                            state = CellState.Dark;
                         }
-                        else if (universeMemory[universeMemory.Count - 3][row, column] == CellStates.Alive)
+                        else if (ghostMemory[2, row, column] == CellStatus.Alive)
                         {
                             state = CellState.Medium;
                         }
-                        else if (universeMemory[universeMemory.Count - 4][row, column] == CellStates.Alive)
+                        else if (ghostMemory[3, row, column] == CellStatus.Alive)
                         {
-                            state = CellState.Dark;
+                            state = CellState.Light;
                         }
 
                     }
@@ -109,7 +108,7 @@ namespace Life
         public void Update()
         {
             // Set up the next generation array
-            CellStates[,] newStates = new CellStates[settings.height, settings.width];
+            CellStatus[,] newStates = new CellStatus[settings.height, settings.width];
             int livingNeighbours;
 
             // Iterate through each cell
@@ -117,83 +116,58 @@ namespace Life
             {
                 for (int column = 0; column < settings.width; column++)
                 {
-                    livingNeighbours = GetLivingNeighbours(row, column);
+                    livingNeighbours = neighborhoodHandler.GetLivingNeighbors(this, row, column);
 
                     // If the cell is alive and has 2 or 3 living neighbours, stay alive
                     if ((int)cellArray[row, column] == 1 &&
                         settings.survival.value.Contains(livingNeighbours))
                     {
-                        newStates[row, column] = CellStates.Alive;
+                        newStates[row, column] = CellStatus.Alive;
                     }
 
                     // If the cell is dead and has exactly three living neighbours, revive
                     else if (cellArray[row, column] == 0 &&
                             settings.birth.value.Contains(livingNeighbours))
                     {
-                        newStates[row, column] = CellStates.Alive;
+                        newStates[row, column] = CellStatus.Alive;
                     }
                     // Otherwise set the cell to dead
                     else
                     {
-                        newStates[row, column] = CellStates.Dead;
+                        newStates[row, column] = CellStatus.Dead;
                     }
                 }
             }
+
+            universeMemory.Add(cellArray);
 
             // Update Class variable to match new state
             cellArray = newStates;
-            universeMemory.Add(cellArray);
-            if (universeMemory.Count > settings.generationalMemory)
-            {
-                universeMemory.RemoveAt(0);
-            }
+            UpdateGhost();
         }
 
-
-        /// <summary>
-        /// Determines the number of living neighbours of some cell
-        /// </summary>
-        /// <param name="row">Row of the chosen cell</param>
-        /// <param name="column">Column of the chosen cell</param>
-        /// <returns>The number of neighbours that are set to living</returns>
-        ///   
-        private int GetLivingNeighbours(int row, int column)
+        private void UpdateGhost()
         {
-            int livingNeighbours = 0;
-            int cursorRow;
-            int cursorColumn;
-
-            for (int rowMod = -1; rowMod <= 1; rowMod++)
+            CellStatus[,,] tempArray = new CellStatus[4, settings.height, settings.width];
+            for (int i = 0; i < 3; i++)
             {
-                // If outside of range vertically and periodic conditions are false
-                //      skip this row
-                if (!settings.periodic && (row + rowMod > settings.height || row + rowMod < 0))
+                for (int row = 0; row < settings.height; row++)
                 {
-                    continue;
-                }
-
-                // Calculate cursor row with wraparound boundaries
-                cursorRow = (row + rowMod + settings.height) % settings.height;
-
-                for (int columnMod = -1; columnMod <= 1; columnMod++)
-                {
-                    cursorColumn = (column + columnMod + settings.width) % settings.width;
-
-                    // If outside of range horizontally and periodic conditions are false,
-                    //  Or the cursor is on the cell being checked
-                    //      skip this row
-                    if ((cursorColumn == column && cursorRow == row) ||
-                        (!settings.periodic && (column + columnMod > settings.width || column + columnMod < 0)))
+                    for (int column = 0; column < settings.width; column++)
                     {
-                        continue;
-                    }
+                        tempArray[i + 1, row, column] = ghostMemory[i, row, column];
 
-                    // Add the integer version of the cell state to the number of living neighbours.
-                    livingNeighbours += (int)cellArray[cursorRow, cursorColumn];
+                        tempArray[0,row,column] = cellArray[row,column];
+                    }
                 }
             }
 
-            return livingNeighbours;
+            ghostMemory = tempArray;
+        }
+
+        public int CheckSteadyState()
+        {
+            return universeMemory.Search(cellArray);
         }
     }
 }

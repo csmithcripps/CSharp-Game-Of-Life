@@ -35,11 +35,14 @@ namespace Life
         /// <summary>
         /// Run the actual simulation (iterate through generations at desired speed) 
         /// </summary>
-        public void RunSimulation()
+        public int RunSimulation()
         {
             displayGrid = new Grid(settings.height, settings.width);
             displayGrid.InitializeWindow();
             Console.ForegroundColor = ConsoleColor.DarkMagenta;
+
+            int steadyStatePoint = -1;
+
             Stopwatch watch = new Stopwatch();
 
             for (int iteration = 0; iteration <= settings.nGenerations; iteration++)
@@ -57,6 +60,13 @@ namespace Life
                 // Update to next generation
                 universe.Update();
 
+                steadyStatePoint = universe.CheckSteadyState();
+
+                if(universe.CheckSteadyState() != -1)
+                {
+                    break;
+                }
+
                 // Wait until at least maximum update time is reached
                 while (watch.ElapsedMilliseconds <= 1000 / settings.updateRate) ;
 
@@ -65,6 +75,8 @@ namespace Life
             }
             displayGrid.SetFootnote("Press <Space> to Exit");
             displayGrid.Render();
+            SeedWriter.WriteSeed(settings.outputFile, ref universe);
+            return steadyStatePoint;
 
         }
 

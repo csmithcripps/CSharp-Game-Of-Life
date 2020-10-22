@@ -36,6 +36,7 @@ namespace Life
         }
 
         public static implicit operator int(IntOption I) => I.value;
+        public static implicit operator uint(IntOption I) => (uint)I.value;
 
     }
 }

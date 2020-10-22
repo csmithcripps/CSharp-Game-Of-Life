@@ -1,12 +1,12 @@
 ﻿namespace Life
 {
-    public enum CellStates
+    public enum CellStatus
     {
         Alive = 1,
         Dead = 0
     };
 
-    public enum Neighborhood
+    public enum NeighborhoodType
     {
         moore,
         vonNeumann

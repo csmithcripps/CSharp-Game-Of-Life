@@ -22,7 +22,7 @@ namespace Life
             while (Console.ReadKey().Key != ConsoleKey.Spacebar) ;
 
             //Run Simulation with Runtime Parameters
-            simulator.RunSimulation();
+            int steadyStatePoint = simulator.RunSimulation();
 
             //Wait to exit
             while (Console.ReadKey().Key != ConsoleKey.Spacebar) ;
@@ -31,6 +31,12 @@ namespace Life
             simulator.exit();
             Console.ResetColor();
 
+            if(steadyStatePoint != -1){
+                Console.WriteLine("Steady State Detected");
+                Console.WriteLine("Periodicity: {0}", (steadyStatePoint == 0)? 
+                                                        "N/A" : 
+                                                        (steadyStatePoint + 1).ToString());
+            } 
         }
     }
 }
