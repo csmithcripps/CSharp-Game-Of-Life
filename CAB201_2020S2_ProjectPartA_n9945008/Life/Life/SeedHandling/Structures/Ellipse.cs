@@ -14,9 +14,9 @@ namespace Life.Structures
             double dx = System.Math.Abs(keypoints[3] - keypoints[1]);
             double dy = System.Math.Abs(keypoints[2] - keypoints[0]);
 
-            for (int row = 0; row <= universe.settings.height; row++)
+            for (int row = 0; row <= universe.Settings.height; row++)
             {
-                for (int column = keypoints[0]; column <= universe.settings.width; column++)
+                for (int column = keypoints[0]; column <= universe.Settings.width; column++)
                 {
                     double numerator1 = 4 * (column - x0) * (column - x0);
                     double denominator1 = dx * dx;
@@ -33,11 +33,13 @@ namespace Life.Structures
         }
         public override int[] stringArrayToKeypoints(string[] data)
         {
+            Console.WriteLine(data);
             int[] keypoints = new int[4];
             for (int i = 0; i < 4; i++)
             {
                 int.TryParse(data[i + 2], out keypoints[i]);
             }
+            Console.WriteLine(keypoints);
             return keypoints;
         }
     }

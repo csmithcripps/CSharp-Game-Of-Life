@@ -1,5 +1,6 @@
 ﻿namespace Life
 {
+    // Enums used
     public enum CellStatus
     {
         Alive = 1,

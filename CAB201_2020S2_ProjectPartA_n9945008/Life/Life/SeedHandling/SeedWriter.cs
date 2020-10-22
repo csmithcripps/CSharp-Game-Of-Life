@@ -3,12 +3,21 @@ using System.IO;
 using System.Collections.Generic;
 
 namespace Life
-{
-    public class SeedWriter
+{/// <summary>
+/// <classSeedWriter</class>
+/// Static class used to write to seed files
+/// </summary>
+    public static class SeedWriter
     {
         /// <summary>
-        /// Initialises Universe universe with initial living cells
+        /// Writes the final version of the universe to a version 2 seed file
         /// </summary>
+        /// <param name="filePath"> 
+        ///     The path to write to
+        /// </param>
+        /// <param name="universe">
+        ///     The universe to write to file
+        /// </param>
         /// 
         public static void WriteSeed(string filePath, ref Universe universe)
         {
@@ -19,11 +28,11 @@ namespace Life
 
             try
             {
-                for (int row = 0; row < universe.settings.height; row++)
+                for (int row = 0; row < universe.Settings.height; row++)
                 {
-                    for (int column = 0; column < universe.settings.width; column++)
+                    for (int column = 0; column < universe.Settings.width; column++)
                     {
-                        if (universe.GetCell(row, column) == CellStatus.Alive)
+                        if (universe[row, column] == CellStatus.Alive)
                         {
                             seedV2.Add($"(o) cell: {row}, {column}");
                         }

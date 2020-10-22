@@ -1,45 +1,52 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Life
 {
-    public class SeedReader
+    public static class SeedReader
     {
         /// <summary>
-        /// Initialises Universe universe with initial living cells
+        ///     Construct a universe object based on the seed information
         /// </summary>
-        /// 
-        public static void HandleSeed(string filePath, ref Universe universe)
+        /// <param name="settings">
+        ///     System settings (contains seed)
+        ///     also needed to initialise Universe
+        /// </param>
+        public static Universe HandleSeed(Settings settings)
         {
+            Universe universe = new Universe(settings);
+            string filePath = settings.seed;
+
             try
             {
-                using (TextReader reader = new StreamReader(filePath))
+                using TextReader reader = new StreamReader(filePath);
+                // Initial Read
+                string line = reader.ReadLine();
+
+                universe = line switch
                 {
-                    // Flush first line 
-                    string line = reader.ReadLine();
-
-                    if (line == "#version=1.0")
-                    {
-                        HandleVersion1(reader, ref universe);
-                    }
-                    else if (line == "#version=2.0")
-                    {
-                        HandleVersion2(reader, ref universe);
-                    }
-
-                }
+                    "#version=1.0" => HandleVersion1(reader, universe),
+                    "#version=2.0" => HandleVersion2(reader, universe),
+                    _ => RandomSeed(universe),
+                };
             }
+            // This should only be the case if the seed was set to N/A
             catch (System.IO.DirectoryNotFoundException)
             {
-                RandomSeed(ref universe);
+                universe = RandomSeed(universe);
             }
+
+            // This will occur if the seed is invalid for the universe dimensions.
             catch (System.IndexOutOfRangeException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Error in Seed (Tried to set cell outside of dimensions) \nDefaulting to Random");
-                RandomSeed(ref universe);
+                universe = RandomSeed(universe);
                 Console.ResetColor();
             }
+
+            return universe;
         }
 
 
@@ -48,10 +55,10 @@ namespace Life
         /// </summary>
         /// <param name="randomFactor">Percentage of cells that will be alive</param>
         ///     
-        public static void RandomSeed(ref Universe universe)
+        public static Universe RandomSeed(Universe universe)
         {
             Random generator = new Random();
-            Settings settings = universe.settings;
+            Settings settings = universe.Settings;
 
             // Run through every row and column
             for (int row = 0; row < settings.height; row++)
@@ -60,14 +67,24 @@ namespace Life
                 {
                     // If some random number is less than the random factor, set cell to alive
                     //      else set cell to dead
-                    universe.SetCell(row, column, (generator.NextDouble() < settings.randomFactor) ?
-                        CellStatus.Alive : CellStatus.Dead);
+                    universe[row, column] = (generator.NextDouble() < settings.randomFactor) ?
+                        CellStatus.Alive : CellStatus.Dead;
                 }
             }
+            return universe;
         }
-        private static void HandleVersion1(TextReader reader, ref Universe universe)
+
+        /// <summary>
+        ///     Handles version 1 seeds.
+        /// </summary>
+        /// <param name="reader">
+        ///     A textreader object attached to a seed 
+        /// </param>
+        /// <param name="universe">
+        ///     The universe object to initialise from the seed
+        /// </param>
+        private static Universe HandleVersion1(TextReader reader, Universe universe)
         {
-            int row, column;
 
             // Initial Read
             string line = reader.ReadLine();
@@ -77,19 +94,28 @@ namespace Life
             {
                 // Take Cell from seed file
                 string[] data = line.Split(" ");
-                int.TryParse(data[0], out row);
-                int.TryParse(data[1], out column);
+                int.TryParse(data[0], out int row);
+                int.TryParse(data[1], out int column);
 
                 // Set chosen cell to alive
-                universe.SetCell(row, column, CellStatus.Alive);
+                universe[row, column] = CellStatus.Alive;
 
                 // Read next line
                 line = reader.ReadLine();
             }
+            return universe;
         }
 
-
-        private static void HandleVersion2(TextReader reader, ref Universe universe)
+        /// <summary>
+        ///     Handles version 2 seeds.
+        /// </summary>
+        /// <param name="reader">
+        ///     A textreader object attached to a seed 
+        /// </param>
+        /// <param name="universe">
+        ///     The universe object to initialise from the seed
+        /// </param>
+        private static Universe HandleVersion2(TextReader reader, Universe universe)
         {
             // Initial Read
             string line = reader.ReadLine();
@@ -97,11 +123,12 @@ namespace Life
             // Read to end of file
             while (line != null)
             {
-                // Take Cell from seed file
+                // Trim unrelated information
                 line = line.Replace(",", "");
                 line = line.Replace(":", "");
                 Console.WriteLine(line);
                 string[] data = line.Split(" ");
+                data = RemoveEmpty(data);
 
                 switch (data[1])
                 {
@@ -124,7 +151,27 @@ namespace Life
                 // Read next line
                 line = reader.ReadLine();
             }
+            return universe;
+        }
 
+        /// <summary>
+        ///     Remove empty elements in a string array
+        /// </summary>
+        /// <param name="array">
+        ///     A string array
+        /// </param>
+        /// <returns>
+        ///     The inputted string array with empty elements removed.
+        /// </returns>
+        private static string[] RemoveEmpty(string[] array)
+        {
+            var temp = new List<string>();
+            foreach (string s in array)
+            {
+                if (!string.IsNullOrEmpty(s))
+                    temp.Add(s);
+            }
+            return temp.ToArray();
         }
     }
 }
